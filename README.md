@@ -6,7 +6,7 @@ This is an example of a Todo app, utilizing [Flask](http://flask.pocoo.org/) and
 
 Here are the steps to get it up and running:
 
-### pre-equirements
+### pre-requirements
 
 * git
 * postgresql
