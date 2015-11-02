@@ -49,7 +49,6 @@ var TodoFooter = React.createClass({displayName: "TodoFooter",
       var count;
       var $remainingTasks = $('input[type="checkbox"]:not(:checked)');
       // TODO:: make it pretty, preferrably with no jquery
-      debugger;
       if (!!$remainingTasks.length) {
         count = $remainingTasks.length + 1
       } else {
