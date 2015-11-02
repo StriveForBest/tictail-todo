@@ -1,69 +1,69 @@
 # Todo app
 
-This is an example of a Todo app, utilizing [Flask](http://flask.pocoo.org/) and [React](https://facebook.github.io/react/)
+This is an example of a Todo app, utilizing [Flask](http://flask.pocoo.org/) and [React](https://facebook.github.io/react/).
 
 ## Setup
 
 Here are the steps to get it up and running:
 
-### pre-requirements
+### Pre-Requirements
 
-* git
-* postgresql
-* python
-* virtualenv
+* Git
+* Postgresql
+* Python
+* Virtualenv
 
-### clone repository
+### Clone Repository
 
 ```sh
 git clone git@github.com:StriveForBest/tictail-todo.git
 cd tictail-todo
 ```
 
-### create virtual environment
+### Create Virtual Environment
 
 ```sh
 virtualenv env
 source env/tictail-todo/bin/activate
 ```
 
-### install requirements
+### Install Requirements
 
 ```sh
 pip install -r requirements.txt
 ```
 
-### create database
+### Create Database
 
 ```sh
 createdb todo
 ```
 
-### run migrations
+### Run Migrations
 
 ```sh
 python manage.py db upgrade
 ```
 
-### install frontend tools
+### Install Frontend Tools
 
 ```sh
 npm install
 bower install
 ```
 
-### compile js and css
+### Compile JSS and CSS
 
 ```sh
 gulp build
 ```
 
-### run the server
+### Run Server
 
 ```sh
 python run.py
 ```
 
-### visit in your browser
+### Now visit in your browser
 
 <http://localhost:8000/>
