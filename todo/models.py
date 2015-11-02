@@ -17,5 +17,5 @@ class Task(db.Model):
     def __repr__(self):
         return u'<Task({id}):: {truncated_body}{ellipsis}>'\
             .format(id=self.id,
-                    truncated_body=self.body[25],
+                    truncated_body=self.body[:25],
                     ellipsis=u'...' if len(self.body) > 25 else u'')

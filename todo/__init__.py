@@ -9,10 +9,5 @@ app.config.from_object(os.environ.get('APP_SETTINGS', 'config.DevelopmentConfig'
 
 db = SQLAlchemy(app)
 
-
-from models import Task
-
-
-@app.route('/')
-def hello():
-    return u'Hello World'
+import todo.views
+import todo.api.v1.views

@@ -1,6 +1,15 @@
 # python
 *.py[cod]
 
+# git
+.git
+
+# tools
+node_modules/
+npm-debug.log
+bower_components/
+.module-cache
+
 # mac os
 .DS_Store
 .AppleDouble
