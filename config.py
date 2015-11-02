@@ -8,7 +8,7 @@ class Config(object):
     CSRF_ENABLED = True
     SECRET_KEY = 'nEb7tEj1tu2olT5eR2ghep8Jam1Yif4G'
 
-    # fallback to if environment variable is not set
+    # fallback if environment variable is not set
     if not os.environ.get('DATABASE_URL'):
         os.environ['DATABASE_URL'] = 'postgresql://localhost/todo'
 
