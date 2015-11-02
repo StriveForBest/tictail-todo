@@ -52,7 +52,7 @@ npm install
 bower install
 ```
 
-### Compile JSS and CSS
+### Compile JS and CSS
 
 ```sh
 gulp build

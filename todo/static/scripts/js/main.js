@@ -9,7 +9,6 @@ var TodoApp = React.createClass({displayName: "TodoApp",
   updateItems: function(newItem) {
     var allItems = this.state.items.concat([newItem]);
     this.setState({items: allItems});
-    this.updateCount();
   },
 
   render: function() {
@@ -23,16 +22,48 @@ var TodoApp = React.createClass({displayName: "TodoApp",
   }
 });
 
-var TodoFooter = React.createClass({displayName: "TodoFooter",
+var MarkAll = React.createClass({displayName: "MarkAll",
+  handleMarkAllReadClick: function(event) {
+    event.preventDefault();
+    console.log('Marked all as complete');
+    $('input[type="checkbox"]').prop('checked', true);
+  },
+
+  componentDidMount: function() {
+    // TODO:: there should be a better way
+    this.getDOMNode().children[0].addEventListener('click', this.handleMarkAllReadClick);
+  },
+
   render: function() {
     return (
+      React.createElement("div", {className: "col-sm-6 text-right"}, 
+        React.createElement("a", {href: "#"}, "Mark all as complete")
+      )
+    )
+  }
+})
+
+var TodoFooter = React.createClass({displayName: "TodoFooter",
+  render: function() {
+    var updateCount = function() {
+      var count;
+      var $remainingTasks = $('input[type="checkbox"]:not(:checked)');
+      // TODO:: make it pretty, preferrably with no jquery
+      debugger;
+      if (!!$remainingTasks.length) {
+        count = $remainingTasks.length + 1
+      } else {
+        count = 0;
+      }
+
+      return count;
+    };
+    return (
       React.createElement("div", {className: "row"}, 
-        React.createElement("div", {className: "col-sm-2 left"}, 
-          React.createElement("span", null, this.props.items.length, " items left")
+        React.createElement("div", {className: "col-sm-2"}, 
+          React.createElement("span", null, updateCount(), " items left")
         ), 
-        React.createElement("div", {className: "col-sm-6 right"}, 
-          React.createElement("a", {href: "#"}, "Mark all as complete")
-        )
+        React.createElement(MarkAll, null, this.props.items)
       )
     )
   }
@@ -99,7 +130,7 @@ var TodoForm = React.createClass({displayName: "TodoForm",
         React.createElement("div", {className: "row"}, 
           React.createElement("div", {className: "form-group col-sm-6"}, 
             React.createElement("input", {className: "form-control input-normal", placeholder: "What needs to be done?", 
-                   type: "text", ref: "item", onChange: this.onChange, value: this.state.item})
+                   type: "text", ref: "item", onChange: this.onChange, value: this.state.item, required: true})
           ), 
           React.createElement("input", {className: "btn btn-default cols-sm-2", type: "submit", value: "Add Todo"})
         )

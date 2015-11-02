@@ -5,5 +5,11 @@
 }
 
 li:nth-child(odd) {
-  background-color: @grey;
+  background-color: @background-grey;
+}
+
+input[type=checkbox]:checked + span {
+  color: @grey;
+  font-style: italic;
+  text-decoration: line-through;
 }

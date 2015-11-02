@@ -1,1 +1,1 @@
-#main-content{text-align:center}li:nth-child(odd){background-color:#ececec}
+#main-content{text-align:center}li:nth-child(odd){background-color:#ececec}input[type=checkbox]:checked+span{color:#53555A;font-style:italic;text-decoration:line-through}

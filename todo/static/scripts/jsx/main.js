@@ -8,7 +8,6 @@ var TodoApp = React.createClass({
   updateItems: function(newItem) {
     var allItems = this.state.items.concat([newItem]);
     this.setState({items: allItems});
-    this.updateCount();
   },
 
   render: function() {
@@ -22,16 +21,48 @@ var TodoApp = React.createClass({
   }
 });
 
-var TodoFooter = React.createClass({
+var MarkAll = React.createClass({
+  handleMarkAllReadClick: function(event) {
+    event.preventDefault();
+    console.log('Marked all as complete');
+    $('input[type="checkbox"]').prop('checked', true);
+  },
+
+  componentDidMount: function() {
+    // TODO:: there should be a better way
+    this.getDOMNode().children[0].addEventListener('click', this.handleMarkAllReadClick);
+  },
+
   render: function() {
     return (
+      <div className='col-sm-6 text-right'>
+        <a href='#'>Mark all as complete</a>
+      </div>
+    )
+  }
+})
+
+var TodoFooter = React.createClass({
+  render: function() {
+    var updateCount = function() {
+      var count;
+      var $remainingTasks = $('input[type="checkbox"]:not(:checked)');
+      // TODO:: make it pretty, preferrably with no jquery
+      debugger;
+      if (!!$remainingTasks.length) {
+        count = $remainingTasks.length + 1
+      } else {
+        count = 0;
+      }
+
+      return count;
+    };
+    return (
       <div className='row'>
-        <div className='col-sm-2 left'>
-          <span>{this.props.items.length} items left</span>
+        <div className='col-sm-2'>
+          <span>{updateCount()} items left</span>
         </div>
-        <div className='col-sm-6 right'>
-          <a href='#'>Mark all as complete</a>
-        </div>
+        <MarkAll>{this.props.items}</MarkAll>
       </div>
     )
   }
@@ -98,7 +129,7 @@ var TodoForm = React.createClass({
         <div className='row'>
           <div className='form-group col-sm-6'>
             <input className='form-control input-normal' placeholder='What needs to be done?'
-                   type='text' ref='item' onChange={this.onChange} value={this.state.item} />
+                   type='text' ref='item' onChange={this.onChange} value={this.state.item} required />
           </div>
           <input className='btn btn-default cols-sm-2' type='submit' value='Add Todo' />
         </div>
