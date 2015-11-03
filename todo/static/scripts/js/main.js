@@ -31,7 +31,7 @@ var MarkAll = React.createClass({displayName: "MarkAll",
 
   componentDidMount: function() {
     // TODO:: there should be a better way
-    this.getDOMNode().children[0].addEventListener('click', this.handleMarkAllReadClick);
+    ReactDOM.findDOMNode(this).children[0].addEventListener('click', this.handleMarkAllReadClick);
   },
 
   render: function() {
@@ -129,7 +129,8 @@ var TodoForm = React.createClass({displayName: "TodoForm",
         React.createElement("div", {className: "row"}, 
           React.createElement("div", {className: "form-group col-sm-6"}, 
             React.createElement("input", {className: "form-control input-normal", placeholder: "What needs to be done?", 
-                   type: "text", ref: "item", onChange: this.onChange, value: this.state.item, required: true})
+                   type: "text", ref: "item", onChange: this.onChange, value: this.state.item, 
+                   required: true})
           ), 
           React.createElement("input", {className: "btn btn-default cols-sm-2", type: "submit", value: "Add Todo"})
         )
@@ -138,7 +139,7 @@ var TodoForm = React.createClass({displayName: "TodoForm",
   }
 });
 
-React.render(
+ReactDOM.render(
   React.createElement(TodoApp, null),
   document.getElementById('todo-wrapper')
 );
