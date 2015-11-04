@@ -1,84 +1,134 @@
+// TODO: split into separate components files
 
-/* [TODO APP] */
 var TodoApp = React.createClass({
   getInitialState: function() {
-    return {items: []};
+    return {tasks: []};
   },
 
-  updateItems: function(newItem) {
-    var allItems = this.state.items.concat([newItem]);
-    this.setState({items: allItems});
+  componentDidMount: function() {
+    this.loadItemsFromServer();
+    setInterval(this.loadItemsFromServer, this.props.pollInterval);
+  },
+
+  loadItemsFromServer: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      cache: false,
+      success: function(data) {
+        this.setState({tasks: data.tasks});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
+  handleItemSubmit: function(item) {
+    // display new item before talking to server
+    var items = this.state.tasks;
+    var newItems = items.concat([item]);
+    this.setState({tasks: newItems});
+
+    // send to the server
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      type: 'post',
+      data: JSON.stringify(item, null, '\t'),
+      success: function(data) {
+        this.setState({tasks: data});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+
+  handleItemChange: function(item) {
+    var that = this;
+
+    // send to the server
+    $.ajax({
+      url: this.props.url + '/' + item.id,
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      type: 'put',
+      data: JSON.stringify(item, null, '\t'),
+      success: function(data) {
+        // TODO:: handle it as a state on the Item level
+        _.findWhere(that.state.tasks, {'id': item.id}).completed = item.completed;
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
   },
 
   render: function() {
     return (
       <div>
-        <TodoForm onFormSubmit={this.updateItems}/>
-        <TodoList items={this.state.items}/>
-        <TodoFooter items={this.state.items}/>
+        <TodoForm onItemSubmit={this.handleItemSubmit} />
+        <TodoList onItemChange={this.handleItemChange} tasks={this.state.tasks} />
+        <TodoFooter tasks={this.state.tasks} />
       </div>
     );
   }
 });
 
-var MarkAll = React.createClass({
-  handleMarkAllReadClick: function(event) {
-    event.preventDefault();
-    console.log('Marked all as complete');
-    $('input[type="checkbox"]').prop('checked', true);
-  },
+// var MarkAll = React.createClass({
+//   handleMarkAllReadClick: function(event) {
+//     event.preventDefault();
+//     console.log('Marked all as complete');
+//     $('input[type="checkbox"]').prop('checked', true);
+//   },
 
-  componentDidMount: function() {
-    // TODO:: there should be a better way
-    ReactDOM.findDOMNode(this).children[0].addEventListener('click', this.handleMarkAllReadClick);
-  },
+//   componentDidMount: function() {
+//     // TODO:: there should be a better way
+//     ReactDOM.findDOMNode(this).children[0].addEventListener('click', this.handleMarkAllReadClick);
+//   },
 
-  render: function() {
-    return (
-      <div className='col-sm-6 text-right'>
-        <a href='#'>Mark all as complete</a>
-      </div>
-    )
-  }
-})
+//   render: function() {
+//     return (
+//       <div className='col-sm-6 text-right'>
+//         <a href='#'>Mark all as complete</a>
+//       </div>
+//     )
+//   }
+// })
 
 var TodoFooter = React.createClass({
   render: function() {
-    var updateCount = function() {
-      var count;
-      var $remainingTasks = $('input[type="checkbox"]:not(:checked)');
-      // TODO:: make it pretty, preferrably with no jquery
-      if (!!$remainingTasks.length) {
-        count = $remainingTasks.length + 1
-      } else {
-        count = 0;
-      }
-
-      return count;
+    var that = this;
+    var getRemainingCount = function() {
+      return that.props.tasks.filter(function(item) {
+        return ! item.completed;
+      }).length;
     };
     return (
       <div className='row'>
         <div className='col-sm-2'>
-          <span>{updateCount()} items left</span>
+          <span>{getRemainingCount()} items left</span>
         </div>
-        <MarkAll>{this.props.items}</MarkAll>
       </div>
     )
   }
 })
 
-/* [TODO LIST] */
 var TodoList = React.createClass({
   render: function() {
-    var createItem = function(itemText) {
+    var that = this;
+    var createItem = function(item) {
       return (
-        <TodoListItem>{itemText}</TodoListItem>
+        // TODO:: find a better way
+        <TodoListItem {...that.props} key={item.id}>{item}</TodoListItem>
       );
     };
     return (
       <div className='row'>
         <div className='form-group col-sm-8'>
-          <ul className='list-group'>{this.props.items.map(createItem)}</ul>
+          <ul className='list-group'>{this.props.tasks.map(createItem)}</ul>
         </div>
       </div>
     );
@@ -86,15 +136,21 @@ var TodoList = React.createClass({
 });
 
 
-/* [TODO LISTITEM] */
 var TodoListItem = React.createClass({
+  handleCheck: function(event) {
+    var isChecked = this.refs._checkbox.checked;
+    this.props.onItemChange({id: this.props.children.id, completed: isChecked});
+    return;
+  },
+
   render: function() {
     return (
       <li className='list-group-item'>
         <div className='checkbox'>
           <label>
-            <input type='checkbox'/>
-            {this.props.children}
+            <input type='checkbox' checked={this.props.children.completed}
+                   ref='_checkbox' onChange={this.handleCheck} />
+            {this.props.children.body}
           </label>
         </div>
       </li>
@@ -103,23 +159,17 @@ var TodoListItem = React.createClass({
 });
 
 
-/* [TODO FORM] */
 var TodoForm = React.createClass({
-  getInitialState: function() {
-    return {item: ''};
-  },
-
   handleSubmit: function(event) {
     event.preventDefault();
-    this.props.onFormSubmit(this.state.item);
-    this.setState({item: ''});
+    var itemBody = this.refs._input.value.trim();
+    if (!itemBody) {
+      return;
+    }
 
-    ReactDOM.findDOMNode(this.refs.item).focus();
+    this.props.onItemSubmit({body: itemBody});
+    this.refs.body.value = '';
     return;
-  },
-
-  onChange: function(event) {
-    this.setState({item: event.target.value});
   },
 
   render: function() {
@@ -128,8 +178,7 @@ var TodoForm = React.createClass({
         <div className='row'>
           <div className='form-group col-sm-6'>
             <input className='form-control input-normal' placeholder='What needs to be done?'
-                   type='text' ref='item' onChange={this.onChange} value={this.state.item}
-                   required />
+                   type='text' ref='_input' required />
           </div>
           <input className='btn btn-default cols-sm-2' type='submit' value='Add Todo' />
         </div>
@@ -139,6 +188,6 @@ var TodoForm = React.createClass({
 });
 
 ReactDOM.render(
-  <TodoApp />,
+  <TodoApp url='/todo/api/v1.0/tasks' pollInterval='2000' />,
   document.getElementById('todo-wrapper')
 );
