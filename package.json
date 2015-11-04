@@ -34,5 +34,9 @@
     "react-dom": "^0.14.1",
     "react-tools": "^0.14.0-alpha3",
     "reactify": "^1.0.0"
+  },
+  "dependencies": {
+    "gulp-exit": "0.0.2",
+    "underscore": "^1.8.3"
   }
 }

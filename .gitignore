@@ -26,3 +26,8 @@ Icon
 
 # pycharm
 .idea/
+
+
+# project
+static/stylesheets/css
+static/scripts/js
