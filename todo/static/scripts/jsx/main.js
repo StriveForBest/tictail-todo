@@ -55,7 +55,7 @@ var TodoApp = React.createClass({
       dataType: 'json',
       contentType: "application/json; charset=utf-8",
       type: 'put',
-      data: JSON.stringify(item, null, '\t'),
+      data: JSON.stringify(item),
       success: function(data) {
         // TODO:: handle it as a state on the Item level
         _.findWhere(that.state.tasks, {'id': item.id}).completed = item.completed;
@@ -77,26 +77,36 @@ var TodoApp = React.createClass({
   }
 });
 
-// var MarkAll = React.createClass({
-//   handleMarkAllReadClick: function(event) {
-//     event.preventDefault();
-//     console.log('Marked all as complete');
-//     $('input[type="checkbox"]').prop('checked', true);
-//   },
+var MarkAll = React.createClass({
+  handleMarkAllReadClick: function(event) {
+    event.preventDefault();
+    // TODO:: mainain state instead of one action, not RESTful :/
+    var url = '/todo/api/v1.0/tasks/mark-all';
+    $.ajax({
+      // TODO:: get it from props.url
+      url: url,
+      dataType: 'json',
+      contentType: "application/json; charset=utf-8",
+      type: 'put',
+      // data: JSON.stringify(),
+      success: function(data) {
+        this.setState({tasks: data});
+        console.log('Marked all as complete');
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(url, status, err.toString());
+      }.bind(this)
+    });
+  },
 
-//   componentDidMount: function() {
-//     // TODO:: there should be a better way
-//     ReactDOM.findDOMNode(this).children[0].addEventListener('click', this.handleMarkAllReadClick);
-//   },
-
-//   render: function() {
-//     return (
-//       <div className='col-sm-6 text-right'>
-//         <a href='#'>Mark all as complete</a>
-//       </div>
-//     )
-//   }
-// })
+  render: function() {
+    return (
+      <div className='col-sm-6 text-right'>
+        <a onClick={this.handleMarkAllReadClick} href='#'>Mark all as complete</a>
+      </div>
+    )
+  }
+})
 
 var TodoFooter = React.createClass({
   render: function() {
@@ -111,6 +121,7 @@ var TodoFooter = React.createClass({
         <div className='col-sm-2'>
           <span>{getRemainingCount()} items left</span>
         </div>
+        <MarkAll />
       </div>
     )
   }

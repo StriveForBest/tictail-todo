@@ -29,5 +29,5 @@ Icon
 
 
 # project
-static/stylesheets/css
-static/scripts/js
+**/stylesheets/css
+**/scripts/js

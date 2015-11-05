@@ -7,6 +7,7 @@ from todo.utils import dump_datetime
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(255))
+    # TODO:: rename to `completed`
     done = db.Column(db.Boolean())
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
