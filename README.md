@@ -49,10 +49,9 @@ python manage.py db upgrade
 
 ```sh
 npm install
-bower install
 ```
 
-### Compile JS and CSS
+### Compile JS and CSS (in a separate terminal window)
 
 ```sh
 gulp build
