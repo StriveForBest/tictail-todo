@@ -1,4 +1,14 @@
-// TODO: split into separate components files
+'use strict';
+
+var $ = require('jquery');
+var _ = require('underscore');
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var TodoForm = require('./components/TodoForm.jsx');
+var TodoList = require('./components/TodoList.jsx');
+var TodoFooter = require('./components/TodoFooter.jsx');
+
 
 var TodoApp = React.createClass({
   getInitialState: function() {
@@ -38,7 +48,7 @@ var TodoApp = React.createClass({
       type: 'post',
       data: JSON.stringify(item, null, '\t'),
       success: function(data) {
-        this.setState({tasks: data});
+        console.log('created task ', data.task.body);
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -73,127 +83,6 @@ var TodoApp = React.createClass({
         <TodoList onItemChange={this.handleItemChange} tasks={this.state.tasks} />
         <TodoFooter tasks={this.state.tasks} />
       </div>
-    );
-  }
-});
-
-var MarkAll = React.createClass({
-  handleMarkAllReadClick: function(event) {
-    event.preventDefault();
-    // TODO:: mainain state instead of one action, not RESTful :/
-    var url = '/todo/api/v1.0/tasks/mark-all';
-    $.ajax({
-      // TODO:: get it from props.url
-      url: url,
-      dataType: 'json',
-      contentType: "application/json; charset=utf-8",
-      type: 'put',
-      // data: JSON.stringify(),
-      success: function(data) {
-        this.setState({tasks: data});
-        console.log('Marked all as complete');
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(url, status, err.toString());
-      }.bind(this)
-    });
-  },
-
-  render: function() {
-    return (
-      <div className='col-sm-6 text-right'>
-        <a onClick={this.handleMarkAllReadClick} href='#'>Mark all as complete</a>
-      </div>
-    )
-  }
-})
-
-var TodoFooter = React.createClass({
-  render: function() {
-    var that = this;
-    var getRemainingCount = function() {
-      return that.props.tasks.filter(function(item) {
-        return ! item.completed;
-      }).length;
-    };
-    return (
-      <div className='row'>
-        <div className='col-sm-2'>
-          <span>{getRemainingCount()} items left</span>
-        </div>
-        <MarkAll />
-      </div>
-    )
-  }
-})
-
-var TodoList = React.createClass({
-  render: function() {
-    var that = this;
-    var createItem = function(item) {
-      return (
-        // TODO:: find a better way
-        <TodoListItem {...that.props} key={item.id}>{item}</TodoListItem>
-      );
-    };
-    return (
-      <div className='row'>
-        <div className='form-group col-sm-8'>
-          <ul className='list-group'>{this.props.tasks.map(createItem)}</ul>
-        </div>
-      </div>
-    );
-  }
-});
-
-
-var TodoListItem = React.createClass({
-  handleCheck: function(event) {
-    var isChecked = this.refs._checkbox.checked;
-    this.props.onItemChange({id: this.props.children.id, completed: isChecked});
-    return;
-  },
-
-  render: function() {
-    return (
-      <li className='list-group-item'>
-        <div className='checkbox'>
-          <label>
-            <input type='checkbox' checked={this.props.children.completed}
-                   ref='_checkbox' onChange={this.handleCheck} />
-            {this.props.children.body}
-          </label>
-        </div>
-      </li>
-    );
-  }
-});
-
-
-var TodoForm = React.createClass({
-  handleSubmit: function(event) {
-    event.preventDefault();
-    var itemBody = this.refs._input.value.trim();
-    if (!itemBody) {
-      return;
-    }
-
-    this.props.onItemSubmit({body: itemBody});
-    this.refs.body.value = '';
-    return;
-  },
-
-  render: function() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <div className='row'>
-          <div className='form-group col-sm-6'>
-            <input className='form-control input-normal' placeholder='What needs to be done?'
-                   type='text' ref='_input' required />
-          </div>
-          <input className='btn btn-default cols-sm-2' type='submit' value='Add Todo' />
-        </div>
-      </form>
     );
   }
 });

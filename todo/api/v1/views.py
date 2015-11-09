@@ -21,7 +21,6 @@ def get_tasks():
 
 @app.route('/todo/api/v1.0/tasks/mark-all', methods=['PUT'])
 def mark_all_tasks():
-    import ipdb; ipdb.set_trace()
     db.session.query(Task).update({Task.completed: True})
     db.session.commit()
 
