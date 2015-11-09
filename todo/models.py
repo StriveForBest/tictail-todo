@@ -8,13 +8,13 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(255))
     # TODO:: rename to `completed`
-    done = db.Column(db.Boolean())
+    completed = db.Column(db.Boolean())
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
 
-    def __init__(self, body, done):
+    def __init__(self, body, completed):
         self.body = body
-        self.done = done
+        self.completed = completed
 
     def __repr__(self):
         return u'<Task({id}):: {truncated_body}{ellipsis}>'\
@@ -30,7 +30,7 @@ class Task(db.Model):
         return {
             'id': self.id,
             'body': self.body,
-            'completed': self.done,
+            'completed': self.completed,
             'created_at': dump_datetime(self.created_at),
             'updated_at': dump_datetime(self.updated_at),
         }

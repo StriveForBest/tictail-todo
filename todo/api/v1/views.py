@@ -22,7 +22,7 @@ def get_tasks():
 @app.route('/todo/api/v1.0/tasks/mark-all', methods=['PUT'])
 def mark_all_tasks():
     import ipdb; ipdb.set_trace()
-    db.session.query(Task).update({Task.done: True})
+    db.session.query(Task).update({Task.completed: True})
     db.session.commit()
 
     return jsonify({
@@ -57,7 +57,7 @@ def update_task(task_id):
         abort(404)
 
     if 'completed' in request.json:
-        task.done = request.json['completed']
+        task.completed = request.json['completed']
         db.session.add(task)
         db.session.commit()
 
@@ -87,7 +87,7 @@ def create_task():
     if not request.json or 'body' not in request.json:
         abort(400)
 
-    task = Task(body=request.json['body'], done=False)
+    task = Task(body=request.json['body'], completed=False)
     db.session.add(task)
     db.session.commit()
 
