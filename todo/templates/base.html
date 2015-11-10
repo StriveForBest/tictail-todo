@@ -6,7 +6,9 @@
     {% include 'partials/meta_tags.html' %}
 
     <!-- styles -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/css/main.css') }}">
     <!-- endstyles -->
   </head>
@@ -27,7 +29,7 @@
 
     {% block scripts %}
     <!-- scripts -->
-    <script src="{{ url_for('static', filename='scripts/js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/js/app.js') }}"></script>
     <!-- endscripts -->
     {% endblock scripts %}
   </body>

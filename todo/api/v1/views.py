@@ -86,7 +86,7 @@ def create_task():
     if not request.json or 'body' not in request.json:
         abort(400)
 
-    task = Task(body=request.json['body'], completed=False)
+    task = Task(body=request.json['body'])
     db.session.add(task)
     db.session.commit()
 

@@ -1,20 +1,30 @@
 from datetime import datetime
 
+from sqlalchemy import func
+
 from todo import db
 from todo.utils import dump_datetime
 
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.String(255))
-    # TODO:: rename to `completed`
+    body = db.Column(db.String(255), nullable=False)
     completed = db.Column(db.Boolean())
+    order = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
 
-    def __init__(self, body, completed):
+    __mapper_args__ = {
+        "order_by": order
+    }
+
+    def __init__(self, body, completed=False, order=None):
         self.body = body
         self.completed = completed
+        if not order:
+            max_order_result = db.session.query(func.max(Task.order)).first()[0] or 0
+            order = max_order_result + 1
+        self.order = order
 
     def __repr__(self):
         return u'<Task({id}):: {truncated_body}{ellipsis}>'\

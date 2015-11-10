@@ -27,7 +27,7 @@ gulp.task('cleanCss', function() {
 gulp.task('clean', ['cleanJs', 'cleanCss']);
 
 gulp.task('buildJs', function() {
-  return gulp.src('./todo/static/scripts/jsx/main.js')
+  return gulp.src('./todo/static/scripts/jsx/app.js')
     .pipe(browserify({transform: ['reactify']}))
     .pipe(gulp.dest('./todo/static/scripts/js'))
     .pipe(size());
@@ -46,6 +46,6 @@ gulp.task('build', ['buildJs', 'buildLess']);
 gulp.task('default', ['clean', 'buildJs', 'buildLess']);
 
 gulp.task('watch', function() {
-  gulp.watch('./todo/static/scripts/jsx/main.js', ['buildJs']);
+  gulp.watch('./todo/static/scripts/jsx/**/*.js', ['buildJs']);
   gulp.watch('./todo/static/stylesheets/less/**/*.less', ['buildLess']);
 });
